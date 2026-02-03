@@ -57,6 +57,19 @@ The requirements did not specify the exact output format for conversions, so I m
 5. Hexadecimal case: Hexadecimal output uses uppercase letters (A-F) for consistency.
 
 
+Implementation Note: Basic Algorithms Requirement
+-------------------------------------------------
+
+The requirements state: "All computation MUST be calculated using the basic algorithms, not functions or libraries."
+
+To comply with this requirement, the following algorithms were implemented manually instead of using Python's built-in functions:
+
+- Binary conversion: Implemented using the division-remainder algorithm instead of Python's built-in `bin()`
+- Hexadecimal conversion: Implemented using the division-remainder algorithm instead of Python's built-in `hex()`
+
+Note: The instructions are not entirely clear about where the boundary lies. For example, it is ambiguous whether basic operations like `int()`, file I/O, or string methods are allowed. This implementation interprets the requirement as applying specifically to the base conversion computations themselves, while allowing standard Python functionality for auxiliary tasks (reading files, argument parsing, parsing strings to integers, etc.).
+
+
 Output Format
 -------------
 

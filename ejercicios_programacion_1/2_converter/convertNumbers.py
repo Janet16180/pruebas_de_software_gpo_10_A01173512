@@ -11,6 +11,69 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+class NumberConverter:
+    """Class containing static methods for converting numbers to different bases."""
+
+    @staticmethod
+    def to_binary(number: int) -> str:
+        """
+        Convert an integer to its binary representation.
+
+        Uses the division-remainder algorithm.
+
+        Args:
+            number: The integer to convert.
+
+        Returns:
+            str: Binary representation of the number.
+        """
+        if number == 0:
+            return "0"
+
+        if number < 0:
+            twos_complement = (2**32) + number
+            return NumberConverter.to_binary(twos_complement)
+
+        binary_digits = []
+        while number > 0:
+            remainder = number % 2
+            binary_digits.append(str(remainder))
+            number = number // 2
+
+        binary_digits.reverse()
+        return ''.join(binary_digits)
+
+    @staticmethod
+    def to_hexadecimal(number: int) -> str:
+        """
+        Convert an integer to its hexadecimal representation.
+
+        Uses the division-remainder algorithm.
+
+        Args:
+            number: The integer to convert.
+
+        Returns:
+            str: Hexadecimal representation of the number (uppercase).
+        """
+        if number == 0:
+            return "0"
+
+        if number < 0:
+            twos_complement = (2**32) + number
+            return NumberConverter.to_hexadecimal(twos_complement)
+
+        hex_chars = "0123456789ABCDEF"
+        hex_digits = []
+        while number > 0:
+            remainder = number % 16
+            hex_digits.append(hex_chars[remainder])
+            number = number // 16
+
+        hex_digits.reverse()
+        return ''.join(hex_digits)
+
+
 def parse_args() -> argparse.Namespace:
     """
     Parse command line arguments for the number conversion program.
@@ -73,13 +136,8 @@ def process_file(file_path: Path) -> list[tuple[int, str, str]]:
                 )
                 continue
 
-            if number >= 0:
-                binary = bin(number)[2:]
-                hexadecimal = hex(number)[2:].upper()
-            else:
-                twos_complement = (2**32) + number
-                binary = bin(twos_complement)[2:]
-                hexadecimal = hex(twos_complement)[2:].upper()
+            binary = NumberConverter.to_binary(number)
+            hexadecimal = NumberConverter.to_hexadecimal(number)
             results.append((number, binary, hexadecimal))
 
     return results
