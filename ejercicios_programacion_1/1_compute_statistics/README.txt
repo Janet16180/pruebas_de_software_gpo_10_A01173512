@@ -90,9 +90,3 @@ Example error output:
     Line 5 'ABA' cannot be converted to a number
     Line 10 '23,45' cannot be converted to a number
 
-
-Requirements
-------------
-
-- Python 3.6 or higher
-- No external libraries required (all calculations use basic algorithms)
