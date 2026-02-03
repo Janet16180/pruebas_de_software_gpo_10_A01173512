@@ -84,6 +84,7 @@ Output Format
 
 The program prints results to the screen and saves them to StatisticsResults.txt:
 
+```
 ==================================================
 DESCRIPTIVE STATISTICS RESULTS
 ==================================================
@@ -96,6 +97,7 @@ Variance:           [calculated variance]
 ==================================================
 Elapsed Time:       [execution time] seconds
 ==================================================
+```
 
 
 Error Handling
