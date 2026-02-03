@@ -82,6 +82,7 @@ Output Format
 
 The program prints results to the screen and saves them to WordCountResults.txt:
 
+```
 ============================================================
 WORD COUNT RESULTS
 ============================================================
@@ -104,6 +105,7 @@ Distinct words found:  11
 ============================================================
 Elapsed Time: 0.000123 seconds
 ============================================================
+```
 
 
 Error Handling
