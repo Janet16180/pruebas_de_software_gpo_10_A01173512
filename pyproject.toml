@@ -1,0 +1,10 @@
+[project]
+name = "pruebas-de-software-gpo-10-a01173512"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "prek>=0.3.1",
+    "ruff>=0.15.0",
+]
