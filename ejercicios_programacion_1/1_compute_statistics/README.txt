@@ -59,6 +59,26 @@ The requirements did not specify the exact input format, so I made the following
 5. Decimal point: Only the period (.) is accepted as a decimal separator, following standard programming conventions.
 
 
+Implementation Note: Basic Algorithms Requirement
+-------------------------------------------------
+
+The requirements state: "All computation MUST be calculated using the basic algorithms, not functions or libraries."
+
+To comply with this requirement, the following algorithms were implemented manually instead of using Python's built-in functions:
+
+- Sorting: Implemented using quicksort algorithm instead of Python's built-in `sorted()` or `list.sort()`
+  Source: https://stackoverflow.com/a/3855607
+  Posted by fmark, modified by community.
+- Square root: Implemented using the Newton-Raphson method instead of `math.sqrt()`
+- Mean: Calculated manually using a loop instead of `statistics.mean()`
+- Median: Calculated manually after sorting instead of `statistics.median()`
+- Mode: Calculated using a frequency dictionary instead of `statistics.mode()`
+- Variance: Calculated manually instead of `statistics.variance()`
+- Standard deviation: Calculated as the square root of variance instead of `statistics.stdev()`
+
+Note: The instructions are not entirely clear about where the boundary lies. For example, it is ambiguous whether basic operations like `len()`, file I/O, or string methods are allowed. This implementation interprets the requirement as applying specifically to the statistical computations themselves, while allowing standard Python functionality for auxiliary tasks (reading files, argument parsing, etc.).
+
+
 Output Format
 -------------
 

@@ -18,7 +18,10 @@ class StatisticsCalculator:
     @staticmethod
     def sort_numbers(numbers: list[float]) -> list[float]:
         """
-        Sort a list of numbers using bubble sort algorithm.
+        Sort a list of numbers using quicksort algorithm.
+
+        Source: https://stackoverflow.com/a/3855607
+        Posted by fmark, modified by community. See post 'Timeline' for history.
 
         Args:
             numbers: List of numbers to sort.
@@ -26,17 +29,17 @@ class StatisticsCalculator:
         Returns:
             list: Sorted list of numbers.
         """
-        sorted_list = numbers[:]
-        n = len(sorted_list)
-
-        for i in range(n):
-            for j in range(0, n - i - 1):
-                if sorted_list[j] > sorted_list[j + 1]:
-                    sorted_list[j], sorted_list[j + 1] = (
-                        sorted_list[j + 1], sorted_list[j]
-                    )
-
-        return sorted_list
+        if numbers == []:
+            return []
+        else:
+            pivot = numbers[0]
+            lesser = StatisticsCalculator.sort_numbers(
+                [x for x in numbers[1:] if x < pivot]
+            )
+            greater = StatisticsCalculator.sort_numbers(
+                [x for x in numbers[1:] if x >= pivot]
+            )
+            return lesser + [pivot] + greater
 
     @staticmethod
     def sqrt(number: float) -> float:
