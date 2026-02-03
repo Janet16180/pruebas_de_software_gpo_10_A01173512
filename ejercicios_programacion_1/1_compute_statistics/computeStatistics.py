@@ -289,18 +289,18 @@ def format_results(
     if not mode or len(mode) > 1:
         mode_str = 'N/A'
     else:
-        mode_str = str(mode[0])
+        mode_str = f"{mode[0]:f}"
 
     results = [
         "=" * 50,
         "DESCRIPTIVE STATISTICS RESULTS",
         "=" * 50,
         f"Count:              {count}",
-        f"Mean:               {mean}",
-        f"Median:             {median}",
+        f"Mean:               {mean:f}",
+        f"Median:             {median:f}",
         f"Mode:               {mode_str}",
-        f"Standard Deviation: {std_dev}",
-        f"Variance:           {variance}",
+        f"Standard Deviation: {std_dev:f}",
+        f"Variance:           {variance:f}",
         "=" * 50,
         f"Elapsed Time:       {elapsed_time:.6f} seconds",
         "=" * 50,
