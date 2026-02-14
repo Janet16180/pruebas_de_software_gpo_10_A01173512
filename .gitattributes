@@ -1,1 +1,2 @@
 2_analisis_estatico/compute_sales/resources/** filter=lfs diff=lfs merge=lfs -text
+1_ejercicios_programacion/*/data/* filter=lfs diff=lfs merge=lfs -text
