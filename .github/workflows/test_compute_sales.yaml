@@ -1,0 +1,33 @@
+name: Test Compute Sales
+
+on:
+  push:
+    paths:
+      - "2_analisis_estatico/compute_sales/**"
+  pull_request:
+    paths:
+      - "2_analisis_estatico/compute_sales/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Run tests
+        run: uv run pytest 2_analisis_estatico/compute_sales/tests/ -v
