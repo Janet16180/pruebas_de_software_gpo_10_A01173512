@@ -41,4 +41,4 @@ To install the pre-commit hooks locally, run:
 prek install
 ```
 
-This project uses [prek](https://github.com/trunk-io/prek), a fast pre-commit implementation written in Rust.
+This project uses [prek](https://github.com/j178/prek), a fast pre-commit implementation written in Rust.
