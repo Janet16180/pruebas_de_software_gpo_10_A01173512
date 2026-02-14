@@ -160,13 +160,13 @@ def compute_sales(
             continue
 
         if quantity < 0:
-            logger.error(
-                "Negative quantity %d for product '%s' (sale %s)",
+            logger.warning(
+                "Negative quantity %d for product '%s' (sale %s), "
+                "treated as a return/refund",
                 quantity,
                 product,
                 sale_id,
             )
-            continue
 
         item_cost = catalogue[product] * quantity
         grand_total += item_cost
