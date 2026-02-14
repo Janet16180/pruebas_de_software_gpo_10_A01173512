@@ -63,7 +63,7 @@ class TestInvalidDataHandling:
         assert "not found in catalogue" in result.output
         assert "GRAND TOTAL" in result.output
 
-    def test_negative_quantity_skipped(self):
+    def test_negative_quantity_warns(self):
         result = run_script(
             str(RESOURCES / "TC1.ProductList.json"), str(RESOURCES / "TC2.Sales.json")
         )
@@ -145,14 +145,14 @@ class TestIntegrationTC2:
     def test_exit_code(self):
         assert self.result.returncode == 0
 
-    def test_negative_quantity_errors(self):
+    def test_negative_quantity_warnings(self):
         assert "Negative quantity" in self.result.output
 
-    def test_execution_continues_after_errors(self):
+    def test_execution_continues_after_warnings(self):
         assert "GRAND TOTAL" in self.result.output
 
     def test_grand_total(self):
-        assert "$169,478.22" in self.result.output
+        assert "$166,568.23" in self.result.output
 
 
 class TestIntegrationTC3:
@@ -169,8 +169,8 @@ class TestIntegrationTC3:
         assert "Elotes" in self.result.output
         assert "Frijoles" in self.result.output
 
-    def test_negative_quantity_errors(self):
+    def test_negative_quantity_warnings(self):
         assert "Negative quantity" in self.result.output
 
     def test_grand_total(self):
-        assert "$168,145.36" in self.result.output
+        assert "$165,235.37" in self.result.output

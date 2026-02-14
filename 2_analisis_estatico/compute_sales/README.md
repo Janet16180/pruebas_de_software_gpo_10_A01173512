@@ -59,11 +59,11 @@ Error Handling
 The program handles invalid data gracefully and continues execution:
 
 - Products in the sales record not found in the catalogue are skipped with an error message.
-- Negative quantities are skipped with an error message.
+- Negative quantities are treated as returns/refunds (they subtract from the total) and a warning is logged.
 - Malformed JSON files produce an error message and the program exits early.
 - Missing required fields in individual records are skipped with an error message.
 
-Example error output:
+Example output:
 
     Product 'Elotes' not found in catalogue (sale 6, index 21)
-    Negative quantity -35 for product 'Fresh blueberries' (sale 8)
+    Negative quantity -35 for product 'Fresh blueberries' (sale 8), treated as a return/refund
