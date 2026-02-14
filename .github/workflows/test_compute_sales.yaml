@@ -2,6 +2,7 @@ name: Test Compute Sales
 
 on:
   push:
+    branches: [main]
     paths:
       - "2_analisis_estatico/compute_sales/**"
   pull_request:
