@@ -1,13 +1,11 @@
 """Count word frequencies from a file containing words."""
+
 import argparse
 import logging
 import time
 from pathlib import Path
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -19,16 +17,16 @@ def parse_args() -> argparse.Namespace:
         argparse.Namespace: Parsed arguments containing the input file path.
     """
     parser = argparse.ArgumentParser(
-        prog='wordCount.py',
-        description='Count word frequencies from a file containing words '
-                    'separated by spaces.',
-        epilog='Example: python wordCount.py fileWithData.txt'
+        prog="wordCount.py",
+        description="Count word frequencies from a file containing words "
+        "separated by spaces.",
+        epilog="Example: python wordCount.py fileWithData.txt",
     )
 
     parser.add_argument(
-        'input_file',
+        "input_file",
         type=Path,
-        help='Path to the file containing words (separated by spaces)'
+        help="Path to the file containing words (separated by spaces)",
     )
 
     return parser.parse_args()
@@ -47,7 +45,7 @@ def is_valid_word(word: str) -> bool:
         bool: True if the word is valid, False otherwise.
     """
     for char in word:
-        if ('a' <= char <= 'z') or ('A' <= char <= 'Z') or ('0' <= char <= '9'):
+        if ("a" <= char <= "z") or ("A" <= char <= "Z") or ("0" <= char <= "9"):
             return True
     return False
 
@@ -64,8 +62,8 @@ def normalize_word(word: str) -> str:
     """
     result = ""
     for char in word:
-        if ('a' <= char <= 'z') or ('A' <= char <= 'Z') or ('0' <= char <= '9'):
-            if 'A' <= char <= 'Z':
+        if ("a" <= char <= "z") or ("A" <= char <= "Z") or ("0" <= char <= "9"):
+            if "A" <= char <= "Z":
                 result += chr(ord(char) + 32)
             else:
                 result += char
@@ -89,7 +87,8 @@ def sort_words(word_list: list[tuple[str, int]]) -> list[tuple[str, int]]:
         for j in range(0, n - i - 1):
             if sorted_list[j][0] > sorted_list[j + 1][0]:
                 sorted_list[j], sorted_list[j + 1] = (
-                    sorted_list[j + 1], sorted_list[j]
+                    sorted_list[j + 1],
+                    sorted_list[j],
                 )
 
     return sorted_list
@@ -136,7 +135,7 @@ def process_file(file_path: Path) -> list[str]:
 
     words = []
 
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open(file_path, "r", encoding="utf-8") as f:
         line_number = 0
         for line in f:
             line_number += 1
@@ -148,7 +147,7 @@ def process_file(file_path: Path) -> list[str]:
                     logger.error(
                         "Line %d: '%s' is not a valid word (no alphanumeric)",
                         line_number,
-                        token
+                        token,
                     )
                     continue
 
@@ -160,9 +159,7 @@ def process_file(file_path: Path) -> list[str]:
 
 
 def format_results(
-    word_counts: list[tuple[str, int]],
-    total_words: int,
-    elapsed_time: float
+    word_counts: list[tuple[str, int]], total_words: int, elapsed_time: float
 ) -> str:
     """
     Format the word count results as a string.
@@ -186,21 +183,22 @@ def format_results(
     for word, count in word_counts:
         lines.append(f"{word:<30}\t{count:<10}")
 
-    lines.extend([
-        "-" * 60,
-        f"Total words processed: {total_words}",
-        f"Distinct words found:  {len(word_counts)}",
-        "=" * 60,
-        f"Elapsed Time: {elapsed_time:.6f} seconds",
-        "=" * 60,
-    ])
+    lines.extend(
+        [
+            "-" * 60,
+            f"Total words processed: {total_words}",
+            f"Distinct words found:  {len(word_counts)}",
+            "=" * 60,
+            f"Elapsed Time: {elapsed_time:.6f} seconds",
+            "=" * 60,
+        ]
+    )
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 def write_results_to_file(
-    results: str,
-    output_file: str = "WordCountResults.txt"
+    results: str, output_file: str = "WordCountResults.txt"
 ) -> None:
     """
     Write the results to a file.
@@ -209,9 +207,9 @@ def write_results_to_file(
         results: Formatted results string.
         output_file: Name of the output file.
     """
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write(results)
-        f.write('\n')
+        f.write("\n")
 
 
 def main() -> None:
@@ -245,5 +243,5 @@ def main() -> None:
     logger.info("Results also saved to: WordCountResults.txt")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -1,13 +1,11 @@
 """Convert numbers to binary and hexadecimal representation."""
+
 import argparse
 import logging
 import time
 from pathlib import Path
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -41,7 +39,7 @@ class NumberConverter:
             number = number // 2
 
         binary_digits.reverse()
-        return ''.join(binary_digits)
+        return "".join(binary_digits)
 
     @staticmethod
     def to_hexadecimal(number: int) -> str:
@@ -71,7 +69,7 @@ class NumberConverter:
             number = number // 16
 
         hex_digits.reverse()
-        return ''.join(hex_digits)
+        return "".join(hex_digits)
 
 
 def parse_args() -> argparse.Namespace:
@@ -82,16 +80,16 @@ def parse_args() -> argparse.Namespace:
         argparse.Namespace: Parsed arguments containing the input file path.
     """
     parser = argparse.ArgumentParser(
-        prog='convertNumbers.py',
-        description='Convert numbers from a file to binary and hexadecimal '
-                    'representation.',
-        epilog='Example: python convertNumbers.py fileWithData.txt'
+        prog="convertNumbers.py",
+        description="Convert numbers from a file to binary and hexadecimal "
+        "representation.",
+        epilog="Example: python convertNumbers.py fileWithData.txt",
     )
 
     parser.add_argument(
-        'input_file',
+        "input_file",
         type=Path,
-        help='Path to the file containing numbers (one per line)'
+        help="Path to the file containing numbers (one per line)",
     )
 
     return parser.parse_args()
@@ -117,7 +115,7 @@ def process_file(file_path: Path) -> list[tuple[int, str, str]]:
 
     results = []
 
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open(file_path, "r", encoding="utf-8") as f:
         line_number = 0
         for line in f:
             line_number += 1
@@ -129,11 +127,7 @@ def process_file(file_path: Path) -> list[tuple[int, str, str]]:
             try:
                 number = int(line)
             except ValueError:
-                logger.error(
-                    "Line %d: '%s' is not a valid integer",
-                    line_number,
-                    line
-                )
+                logger.error("Line %d: '%s' is not a valid integer", line_number, line)
                 continue
 
             binary = NumberConverter.to_binary(number)
@@ -143,10 +137,7 @@ def process_file(file_path: Path) -> list[tuple[int, str, str]]:
     return results
 
 
-def format_results(
-    conversions: list[tuple[int, str, str]],
-    elapsed_time: float
-) -> str:
+def format_results(conversions: list[tuple[int, str, str]], elapsed_time: float) -> str:
     """
     Format the conversion results as a string.
 
@@ -168,20 +159,21 @@ def format_results(
     for number, binary, hexadecimal in conversions:
         lines.append(f"{number:<20}\t{binary:<40}\t{hexadecimal:<20}")
 
-    lines.extend([
-        "-" * 80,
-        f"Total numbers converted: {len(conversions)}",
-        "=" * 80,
-        f"Elapsed Time: {elapsed_time:.6f} seconds",
-        "=" * 80,
-    ])
+    lines.extend(
+        [
+            "-" * 80,
+            f"Total numbers converted: {len(conversions)}",
+            "=" * 80,
+            f"Elapsed Time: {elapsed_time:.6f} seconds",
+            "=" * 80,
+        ]
+    )
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 def write_results_to_file(
-    results: str,
-    output_file: str = "ConvertionResults.txt"
+    results: str, output_file: str = "ConvertionResults.txt"
 ) -> None:
     """
     Write the results to a file.
@@ -190,9 +182,9 @@ def write_results_to_file(
         results: Formatted results string.
         output_file: Name of the output file.
     """
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write(results)
-        f.write('\n')
+        f.write("\n")
 
 
 def main() -> None:
@@ -218,5 +210,5 @@ def main() -> None:
     logger.info("Results also saved to: ConvertionResults.txt")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

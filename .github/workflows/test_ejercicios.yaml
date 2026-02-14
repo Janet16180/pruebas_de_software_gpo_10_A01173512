@@ -1,0 +1,34 @@
+name: Test Ejercicios Programacion
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "1_ejercicios_programacion/**"
+  pull_request:
+    paths:
+      - "1_ejercicios_programacion/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync --dev
+
+      - name: Run tests
+        run: uv run pytest 1_ejercicios_programacion/ -v

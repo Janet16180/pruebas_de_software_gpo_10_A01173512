@@ -1,14 +1,12 @@
 """Compute descriptive statistics from a file containing numbers."""
+
 import argparse
 import logging
 import re
 import time
 from pathlib import Path
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(message)s'
-)
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -199,17 +197,17 @@ def parse_args() -> argparse.Namespace:
         argparse.Namespace: Parsed arguments containing the input file path.
     """
     parser = argparse.ArgumentParser(
-        prog='computeStatistics.py',
-        description='Compute descriptive statistics (mean, median, mode, '
-                    'standard deviation, and variance) from a file containing '
-                    'numbers.',
-        epilog='Example: python computeStatistics.py fileWithData.txt'
+        prog="computeStatistics.py",
+        description="Compute descriptive statistics (mean, median, mode, "
+        "standard deviation, and variance) from a file containing "
+        "numbers.",
+        epilog="Example: python computeStatistics.py fileWithData.txt",
     )
 
     parser.add_argument(
-        'input_file',
+        "input_file",
         type=Path,
-        help='Path to the file containing numbers (one per line)'
+        help="Path to the file containing numbers (one per line)",
     )
 
     return parser.parse_args()
@@ -234,11 +232,9 @@ def process_file(file_path: Path) -> list[float]:
         return []
 
     numbers = []
-    number_pattern = re.compile(
-        r"^[-+]?(\d+\.?\d*|\d*\.?\d+)$"
-    )
+    number_pattern = re.compile(r"^[-+]?(\d+\.?\d*|\d*\.?\d+)$")
 
-    with open(file_path, 'r', encoding='utf-8') as f:
+    with open(file_path, "r", encoding="utf-8") as f:
         line_number = 0
         for line in f:
             line_number += 1
@@ -251,9 +247,7 @@ def process_file(file_path: Path) -> list[float]:
 
             if not match_number:
                 logger.error(
-                    "Line %d '%s' cannot be converted to a number",
-                    line_number,
-                    line
+                    "Line %d '%s' cannot be converted to a number", line_number, line
                 )
                 continue
 
@@ -269,7 +263,7 @@ def format_results(
     mode: list[float],
     std_dev: float,
     variance: float,
-    elapsed_time: float
+    elapsed_time: float,
 ) -> str:
     """
     Format the statistics results as a string.
@@ -287,7 +281,7 @@ def format_results(
         str: Formatted results string.
     """
     if not mode or len(mode) > 1:
-        mode_str = 'N/A'
+        mode_str = "N/A"
     else:
         mode_str = f"{mode[0]:f}"
 
@@ -306,10 +300,12 @@ def format_results(
         "=" * 50,
     ]
 
-    return '\n'.join(results)
+    return "\n".join(results)
 
 
-def write_results_to_file(results: str, output_file: str = "StatisticsResults.txt") -> None:
+def write_results_to_file(
+    results: str, output_file: str = "StatisticsResults.txt"
+) -> None:
     """
     Write the results to a file.
 
@@ -317,9 +313,9 @@ def write_results_to_file(results: str, output_file: str = "StatisticsResults.tx
         results: Formatted results string.
         output_file: Name of the output file.
     """
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write(results)
-        f.write('\n')
+        f.write("\n")
 
 
 def main() -> None:
@@ -351,7 +347,7 @@ def main() -> None:
         mode=mode,
         std_dev=std_dev,
         variance=variance,
-        elapsed_time=elapsed_time
+        elapsed_time=elapsed_time,
     )
 
     logger.info(results)
@@ -359,5 +355,5 @@ def main() -> None:
     logger.info("Results also saved to: StatisticsResults.txt")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
