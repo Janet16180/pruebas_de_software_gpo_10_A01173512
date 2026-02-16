@@ -21,7 +21,8 @@ def parse_args() -> argparse.Namespace:
         prog="computeSales.py",
         description="Compute the total cost for all sales based on a "
         "price catalogue and a sales record.",
-        epilog="Example: python computeSales.py priceCatalogue.json salesRecord.json",
+        epilog="Example: python computeSales.py "
+        "priceCatalogue.json salesRecord.json",
     )
 
     parser.add_argument(
@@ -204,7 +205,9 @@ def format_results(
     return "\n".join(lines)
 
 
-def write_results_to_file(results: str, output_file: str = "SalesResults.txt") -> None:
+def write_results_to_file(
+    results: str, output_file: str = "SalesResults.txt"
+) -> None:
     """
     Write the results to a file.
 

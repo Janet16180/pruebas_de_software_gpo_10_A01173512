@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class NumberConverter:
-    """Class containing static methods for converting numbers to different bases."""
+    """Static methods for converting numbers to different bases."""
 
     @staticmethod
     def to_binary(number: int) -> str:
@@ -127,7 +127,9 @@ def process_file(file_path: Path) -> list[tuple[int, str, str]]:
             try:
                 number = int(line)
             except ValueError:
-                logger.error("Line %d: '%s' is not a valid integer", line_number, line)
+                logger.error(
+                    "Line %d: '%s' is not a valid integer", line_number, line
+                )
                 continue
 
             binary = NumberConverter.to_binary(number)
@@ -137,7 +139,9 @@ def process_file(file_path: Path) -> list[tuple[int, str, str]]:
     return results
 
 
-def format_results(conversions: list[tuple[int, str, str]], elapsed_time: float) -> str:
+def format_results(
+    conversions: list[tuple[int, str, str]], elapsed_time: float
+) -> str:
     """
     Format the conversion results as a string.
 

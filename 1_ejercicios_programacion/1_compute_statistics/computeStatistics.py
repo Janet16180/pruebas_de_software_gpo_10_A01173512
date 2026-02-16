@@ -19,7 +19,8 @@ class StatisticsCalculator:
         Sort a list of numbers using quicksort algorithm.
 
         Source: https://stackoverflow.com/a/3855607
-        Posted by fmark, modified by community. See post 'Timeline' for history.
+        Posted by fmark, modified by community.
+        See post 'Timeline' for history.
 
         Args:
             numbers: List of numbers to sort.
@@ -247,7 +248,9 @@ def process_file(file_path: Path) -> list[float]:
 
             if not match_number:
                 logger.error(
-                    "Line %d '%s' cannot be converted to a number", line_number, line
+                    "Line %d '%s' cannot be converted to a number",
+                    line_number,
+                    line,
                 )
                 continue
 
