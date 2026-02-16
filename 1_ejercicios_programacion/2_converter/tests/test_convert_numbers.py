@@ -47,14 +47,26 @@ class TestToBinary:
 
     def test_negative_twos_complement(self):
         """Negative numbers should use 32-bit two's complement."""
-        assert NumberConverter.to_binary(-1) == "11111111111111111111111111111111"
-        assert NumberConverter.to_binary(-39) == "11111111111111111111111111011001"
-        assert NumberConverter.to_binary(-50) == "11111111111111111111111111001110"
+        assert (
+            NumberConverter.to_binary(-1) == "11111111111111111111111111111111"
+        )
+        assert (
+            NumberConverter.to_binary(-39)
+            == "11111111111111111111111111011001"
+        )
+        assert (
+            NumberConverter.to_binary(-50)
+            == "11111111111111111111111111001110"
+        )
 
     def test_negative_small(self):
-        """Small negative values should have leading ones in two's complement."""
-        assert NumberConverter.to_binary(-6) == "11111111111111111111111111111010"
-        assert NumberConverter.to_binary(-4) == "11111111111111111111111111111100"
+        """Small negatives should have leading ones in two's complement."""
+        assert (
+            NumberConverter.to_binary(-6) == "11111111111111111111111111111010"
+        )
+        assert (
+            NumberConverter.to_binary(-4) == "11111111111111111111111111111100"
+        )
 
 
 # ──────────────────────────────────────────────
@@ -160,8 +172,16 @@ class TestProcessFile:
         data_file.write_text("-39\n-6\n")
         result = process_file(data_file)
         assert len(result) == 2
-        assert result[0] == (-39, "11111111111111111111111111011001", "FFFFFFD9")
-        assert result[1] == (-6, "11111111111111111111111111111010", "FFFFFFFA")
+        assert result[0] == (
+            -39,
+            "11111111111111111111111111011001",
+            "FFFFFFD9",
+        )
+        assert result[1] == (
+            -6,
+            "11111111111111111111111111111010",
+            "FFFFFFFA",
+        )
 
     def test_invalid_lines_skipped(self, tmp_path):
         """Invalid lines (decimals, text) should be skipped."""
@@ -270,7 +290,11 @@ class TestIntegrationTC1:
         # 50986 (index 24)
         assert self.conversions[24] == (50986, "1100011100101010", "C72A")
         # 2250854 (index 199, last)
-        assert self.conversions[199] == (2250854, "1000100101100001100110", "225866")
+        assert self.conversions[199] == (
+            2250854,
+            "1000100101100001100110",
+            "225866",
+        )
 
 
 class TestIntegrationTC2:
@@ -300,7 +324,7 @@ class TestIntegrationTC2:
 
 
 class TestIntegrationTC3:
-    """Integration tests for TC3.txt against t3_result.txt (mixed positive/negative)."""
+    """Integration tests for TC3.txt (mixed positive/negative)."""
 
     @pytest.fixture(autouse=True)
     def setup(self):
@@ -340,7 +364,7 @@ class TestIntegrationTC3:
 
 
 class TestIntegrationTC4:
-    """Integration tests for TC4.txt against t4_result.txt (with invalid entries)."""
+    """Integration tests for TC4.txt (with invalid entries)."""
 
     @pytest.fixture(autouse=True)
     def setup(self):

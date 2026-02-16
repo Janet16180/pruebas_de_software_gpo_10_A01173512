@@ -34,15 +34,33 @@ class TestSortNumbers:
 
     def test_sort_already_sorted(self):
         """An already sorted list should remain the same."""
-        assert StatisticsCalculator.sort_numbers([1, 2, 3, 4, 5]) == [1, 2, 3, 4, 5]
+        assert StatisticsCalculator.sort_numbers([1, 2, 3, 4, 5]) == [
+            1,
+            2,
+            3,
+            4,
+            5,
+        ]
 
     def test_sort_reverse_order(self):
         """A reverse-sorted list should be sorted ascending."""
-        assert StatisticsCalculator.sort_numbers([5, 4, 3, 2, 1]) == [1, 2, 3, 4, 5]
+        assert StatisticsCalculator.sort_numbers([5, 4, 3, 2, 1]) == [
+            1,
+            2,
+            3,
+            4,
+            5,
+        ]
 
     def test_sort_with_duplicates(self):
         """Duplicates should be preserved in the sorted output."""
-        assert StatisticsCalculator.sort_numbers([3, 1, 2, 1, 3]) == [1, 1, 2, 3, 3]
+        assert StatisticsCalculator.sort_numbers([3, 1, 2, 1, 3]) == [
+            1,
+            1,
+            2,
+            3,
+            3,
+        ]
 
     def test_sort_negative_numbers(self):
         """Negative numbers should be sorted correctly."""
@@ -88,12 +106,18 @@ class TestSqrt:
 
     def test_sqrt_non_perfect_square(self):
         """Square root of non-perfect squares should be accurate."""
-        assert StatisticsCalculator.sqrt(2) == pytest.approx(1.414213, abs=1e-6)
-        assert StatisticsCalculator.sqrt(3) == pytest.approx(1.732050, abs=1e-6)
+        assert StatisticsCalculator.sqrt(2) == pytest.approx(
+            1.414213, abs=1e-6
+        )
+        assert StatisticsCalculator.sqrt(3) == pytest.approx(
+            1.732050, abs=1e-6
+        )
 
     def test_sqrt_large_number(self):
         """Square root of a large number should be accurate."""
-        assert StatisticsCalculator.sqrt(1000000) == pytest.approx(1000.0, abs=1e-6)
+        assert StatisticsCalculator.sqrt(1000000) == pytest.approx(
+            1000.0, abs=1e-6
+        )
 
 
 # ──────────────────────────────────────────────
@@ -118,7 +142,9 @@ class TestMean:
 
     def test_mean_negative_numbers(self):
         """Mean with negative numbers."""
-        assert StatisticsCalculator.mean([-2, -1, 0, 1, 2]) == pytest.approx(0.0)
+        assert StatisticsCalculator.mean([-2, -1, 0, 1, 2]) == pytest.approx(
+            0.0
+        )
 
     def test_mean_decimals(self):
         """Mean of decimal numbers."""
@@ -146,12 +172,14 @@ class TestMedian:
         assert StatisticsCalculator.median([3, 1, 2]) == pytest.approx(2.0)
 
     def test_median_even_count(self):
-        """Median with an even number of elements is the average of the two middle."""
+        """Median with even count is the average of two middle."""
         assert StatisticsCalculator.median([1, 2, 3, 4]) == pytest.approx(2.5)
 
     def test_median_unsorted_input(self):
         """Median should work with unsorted input."""
-        assert StatisticsCalculator.median([5, 1, 3, 4, 2]) == pytest.approx(3.0)
+        assert StatisticsCalculator.median([5, 1, 3, 4, 2]) == pytest.approx(
+            3.0
+        )
 
 
 # ──────────────────────────────────────────────
@@ -171,7 +199,7 @@ class TestMode:
         assert StatisticsCalculator.mode([1, 2, 2, 3]) == [2]
 
     def test_mode_multiple_modes(self):
-        """When multiple values share the highest frequency, all are returned."""
+        """Multiple values with highest frequency are all returned."""
         result = StatisticsCalculator.mode([1, 1, 2, 2, 3])
         assert result == [1, 2]
 
@@ -203,13 +231,15 @@ class TestVariance:
 
     def test_variance_identical_values(self):
         """Variance of identical values should be zero."""
-        assert StatisticsCalculator.variance([3, 3, 3, 3]) == pytest.approx(0.0)
+        assert StatisticsCalculator.variance([3, 3, 3, 3]) == pytest.approx(
+            0.0
+        )
 
     def test_variance_known_values(self):
         """Variance of [2, 4, 4, 4, 5, 5, 7, 9] = 4.0."""
-        assert StatisticsCalculator.variance([2, 4, 4, 4, 5, 5, 7, 9]) == pytest.approx(
-            4.0
-        )
+        assert StatisticsCalculator.variance(
+            [2, 4, 4, 4, 5, 5, 7, 9]
+        ) == pytest.approx(4.0)
 
 
 # ──────────────────────────────────────────────
@@ -230,9 +260,9 @@ class TestStdDev:
 
     def test_std_dev_known_values(self):
         """Standard deviation of [2, 4, 4, 4, 5, 5, 7, 9] = 2.0."""
-        assert StatisticsCalculator.std_dev([2, 4, 4, 4, 5, 5, 7, 9]) == pytest.approx(
-            2.0, abs=1e-6
-        )
+        assert StatisticsCalculator.std_dev(
+            [2, 4, 4, 4, 5, 5, 7, 9]
+        ) == pytest.approx(2.0, abs=1e-6)
 
 
 # ──────────────────────────────────────────────

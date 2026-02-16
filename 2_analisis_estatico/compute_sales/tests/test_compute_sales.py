@@ -35,11 +35,15 @@ class TestCLIArguments:
         assert "usage" in result.stderr.lower()
 
     def test_nonexistent_catalogue(self):
-        result = run_script("nonexistent.json", str(RESOURCES / "TC1.Sales.json"))
+        result = run_script(
+            "nonexistent.json", str(RESOURCES / "TC1.Sales.json")
+        )
         assert "does not exist" in result.output
 
     def test_nonexistent_sales(self):
-        result = run_script(str(RESOURCES / "TC1.ProductList.json"), "nonexistent.json")
+        result = run_script(
+            str(RESOURCES / "TC1.ProductList.json"), "nonexistent.json"
+        )
         assert "does not exist" in result.output
 
 
@@ -53,19 +57,23 @@ class TestInvalidDataHandling:
     def test_invalid_json_sales(self, tmp_path):
         bad_file = tmp_path / "bad.json"
         bad_file.write_text("{broken")
-        result = run_script(str(RESOURCES / "TC1.ProductList.json"), str(bad_file))
+        result = run_script(
+            str(RESOURCES / "TC1.ProductList.json"), str(bad_file)
+        )
         assert "Invalid JSON" in result.output
 
     def test_product_not_in_catalogue(self):
         result = run_script(
-            str(RESOURCES / "TC1.ProductList.json"), str(RESOURCES / "TC3.Sales.json")
+            str(RESOURCES / "TC1.ProductList.json"),
+            str(RESOURCES / "TC3.Sales.json"),
         )
         assert "not found in catalogue" in result.output
         assert "GRAND TOTAL" in result.output
 
     def test_negative_quantity_warns(self):
         result = run_script(
-            str(RESOURCES / "TC1.ProductList.json"), str(RESOURCES / "TC2.Sales.json")
+            str(RESOURCES / "TC1.ProductList.json"),
+            str(RESOURCES / "TC2.Sales.json"),
         )
         assert "Negative quantity" in result.output
         assert "GRAND TOTAL" in result.output
@@ -78,7 +86,8 @@ class TestOutputResults:
             results_file.unlink()
 
         run_script(
-            str(RESOURCES / "TC1.ProductList.json"), str(RESOURCES / "TC1.Sales.json")
+            str(RESOURCES / "TC1.ProductList.json"),
+            str(RESOURCES / "TC1.Sales.json"),
         )
         assert results_file.exists()
         results_file.unlink()
@@ -87,13 +96,16 @@ class TestOutputResults:
         results_file = BASE_DIR / "SalesResults.txt"
 
         result = run_script(
-            str(RESOURCES / "TC1.ProductList.json"), str(RESOURCES / "TC1.Sales.json")
+            str(RESOURCES / "TC1.ProductList.json"),
+            str(RESOURCES / "TC1.Sales.json"),
         )
 
         file_content = results_file.read_text(encoding="utf-8").strip()
         output_lines = result.output.strip().split("\n")
         output_content = "\n".join(
-            line for line in output_lines if "Results also saved to" not in line
+            line
+            for line in output_lines
+            if "Results also saved to" not in line
         ).strip()
 
         assert file_content == output_content
@@ -101,14 +113,16 @@ class TestOutputResults:
 
     def test_elapsed_time_in_output(self):
         result = run_script(
-            str(RESOURCES / "TC1.ProductList.json"), str(RESOURCES / "TC1.Sales.json")
+            str(RESOURCES / "TC1.ProductList.json"),
+            str(RESOURCES / "TC1.Sales.json"),
         )
         assert "Elapsed Time:" in result.output
         assert "seconds" in result.output
 
     def test_grand_total_in_output(self):
         result = run_script(
-            str(RESOURCES / "TC1.ProductList.json"), str(RESOURCES / "TC1.Sales.json")
+            str(RESOURCES / "TC1.ProductList.json"),
+            str(RESOURCES / "TC1.Sales.json"),
         )
         assert "GRAND TOTAL" in result.output
 
@@ -117,7 +131,8 @@ class TestIntegrationTC1:
     @pytest.fixture(autouse=True)
     def setup(self):
         self.result = run_script(
-            str(RESOURCES / "TC1.ProductList.json"), str(RESOURCES / "TC1.Sales.json")
+            str(RESOURCES / "TC1.ProductList.json"),
+            str(RESOURCES / "TC1.Sales.json"),
         )
 
     def test_exit_code(self):
@@ -139,7 +154,8 @@ class TestIntegrationTC2:
     @pytest.fixture(autouse=True)
     def setup(self):
         self.result = run_script(
-            str(RESOURCES / "TC1.ProductList.json"), str(RESOURCES / "TC2.Sales.json")
+            str(RESOURCES / "TC1.ProductList.json"),
+            str(RESOURCES / "TC2.Sales.json"),
         )
 
     def test_exit_code(self):
@@ -159,7 +175,8 @@ class TestIntegrationTC3:
     @pytest.fixture(autouse=True)
     def setup(self):
         self.result = run_script(
-            str(RESOURCES / "TC1.ProductList.json"), str(RESOURCES / "TC3.Sales.json")
+            str(RESOURCES / "TC1.ProductList.json"),
+            str(RESOURCES / "TC3.Sales.json"),
         )
 
     def test_exit_code(self):

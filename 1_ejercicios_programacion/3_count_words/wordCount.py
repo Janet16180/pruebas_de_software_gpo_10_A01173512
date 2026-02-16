@@ -45,7 +45,11 @@ def is_valid_word(word: str) -> bool:
         bool: True if the word is valid, False otherwise.
     """
     for char in word:
-        if ("a" <= char <= "z") or ("A" <= char <= "Z") or ("0" <= char <= "9"):
+        if (
+            ("a" <= char <= "z")
+            or ("A" <= char <= "Z")
+            or ("0" <= char <= "9")
+        ):
             return True
     return False
 
@@ -62,7 +66,11 @@ def normalize_word(word: str) -> str:
     """
     result = ""
     for char in word:
-        if ("a" <= char <= "z") or ("A" <= char <= "Z") or ("0" <= char <= "9"):
+        if (
+            ("a" <= char <= "z")
+            or ("A" <= char <= "Z")
+            or ("0" <= char <= "9")
+        ):
             if "A" <= char <= "Z":
                 result += chr(ord(char) + 32)
             else:
