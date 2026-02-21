@@ -25,7 +25,7 @@ class Customer:
     email: str
 
 
-class CustomerManager(EntityManager):
+class CustomerManager(EntityManager[Customer]):
     """Manager for Customer persistence and operations."""
 
     _prefix: ClassVar[str] = "customer"

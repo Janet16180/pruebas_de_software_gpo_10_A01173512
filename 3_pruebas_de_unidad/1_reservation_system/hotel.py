@@ -35,7 +35,7 @@ class Hotel:
     )
 
 
-class HotelManager(EntityManager):
+class HotelManager(EntityManager[Hotel]):
     """Manager for Hotel persistence and operations."""
 
     _prefix: ClassVar[str] = "hotel"

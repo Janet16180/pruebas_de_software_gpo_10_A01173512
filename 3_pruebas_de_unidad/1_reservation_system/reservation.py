@@ -28,7 +28,7 @@ class Reservation:
     hotel_id: int
 
 
-class ReservationManager(EntityManager):
+class ReservationManager(EntityManager[Reservation]):
     """Manager for Reservation persistence and operations."""
 
     _prefix: ClassVar[str] = "reservation"

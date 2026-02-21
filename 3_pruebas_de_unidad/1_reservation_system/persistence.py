@@ -4,12 +4,14 @@ import dataclasses
 import json
 import logging
 from pathlib import Path
-from typing import Any, ClassVar, Optional
+from typing import Any, ClassVar, Generic, Optional, TypeVar
 
 logger = logging.getLogger(__name__)
 
+T = TypeVar("T")
 
-class EntityManager:
+
+class EntityManager(Generic[T]):
     """Base manager for dataclass entity persistence.
 
     Subclasses must define ``_prefix``, ``_id_attr``,
@@ -41,12 +43,12 @@ class EntityManager:
         """
         return self._storage_dir / f"{self._prefix}_{entity_id}.json"
 
-    def to_dict(self, entity: Any) -> dict[str, Any]:  # noqa: ANN401
+    def to_dict(self, entity: T) -> dict[str, Any]:
         """Serialize an entity to a dictionary.
 
         Parameters
         ----------
-        entity : Any
+        entity : T
             Dataclass instance to serialize.
 
         Returns
@@ -56,10 +58,7 @@ class EntityManager:
         """
         return dataclasses.asdict(entity)
 
-    def from_dict(
-        self,
-        data: dict[str, Any],
-    ) -> Any:  # noqa: ANN401
+    def from_dict(self, data: dict[str, Any]) -> T:
         """Deserialize an entity from a dictionary.
 
         Parameters
@@ -69,7 +68,7 @@ class EntityManager:
 
         Returns
         -------
-        Any
+        T
             Reconstructed dataclass instance.
         """
         init_fields = {
@@ -88,12 +87,12 @@ class EntityManager:
                 )
         return instance
 
-    def save(self, entity: Any) -> bool:  # noqa: ANN401
+    def save(self, entity: T) -> bool:
         """Persist an entity to a JSON file.
 
         Parameters
         ----------
-        entity : Any
+        entity : T
             Dataclass instance to save.
 
         Returns
@@ -123,7 +122,7 @@ class EntityManager:
             )
             return False
 
-    def load(self, entity_id: int) -> Optional[Any]:  # noqa: ANN401
+    def load(self, entity_id: int) -> Optional[T]:
         """Load an entity from its JSON file.
 
         Parameters
@@ -133,7 +132,7 @@ class EntityManager:
 
         Returns
         -------
-        Any or None
+        T or None
             The loaded entity, or None if failed.
         """
         try:
@@ -158,12 +157,12 @@ class EntityManager:
             )
             return None
 
-    def delete(self, entity: Any) -> bool:  # noqa: ANN401
+    def delete(self, entity: T) -> bool:
         """Delete an entity's JSON file from disk.
 
         Parameters
         ----------
-        entity : Any
+        entity : T
             Dataclass instance to delete.
 
         Returns
