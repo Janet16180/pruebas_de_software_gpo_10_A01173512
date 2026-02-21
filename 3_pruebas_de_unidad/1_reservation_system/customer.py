@@ -1,15 +1,14 @@
-"""Customer entity with JSON file persistence."""
+"""Customer entity and manager."""
 
 from dataclasses import dataclass
-from pathlib import Path
 from typing import ClassVar, Optional
 
-from persistence import PersistentEntity
+from persistence import EntityManager
 
 
 @dataclass
-class Customer(PersistentEntity):
-    """Represent a hotel customer.
+class Customer:
+    """Customer data.
 
     Parameters
     ----------
@@ -21,22 +20,24 @@ class Customer(PersistentEntity):
         Email address of the customer.
     """
 
-    _prefix: ClassVar[str] = "customer"
-    _id_attr: ClassVar[str] = "customer_id"
-
     customer_id: int
     name: str
     email: str
 
-    @classmethod
+
+class CustomerManager(EntityManager):
+    """Manager for Customer persistence and operations."""
+
+    _prefix: ClassVar[str] = "customer"
+    _id_attr: ClassVar[str] = "customer_id"
+    _entity_cls: ClassVar[type] = Customer
+
     def create(
-        cls,
+        self,
         customer_id: int,
         name: str,
         email: str,
-        *,
-        storage_dir: Optional[Path] = None,
-    ) -> Optional["Customer"]:
+    ) -> Optional[Customer]:
         """Create a new customer and persist to disk.
 
         Parameters
@@ -47,22 +48,24 @@ class Customer(PersistentEntity):
             Full name of the customer.
         email : str
             Email address of the customer.
-        storage_dir : Path, optional
-            Directory for JSON file persistence.
 
         Returns
         -------
         Customer or None
             The created customer, or None if failed.
         """
-        customer = cls(customer_id, name, email)
-        customer._storage_dir = storage_dir or Path(".")
-        if customer.save():
+        customer = Customer(customer_id, name, email)
+        if self.save(customer):
             return customer
         return None
 
-    def display_info(self) -> str:
-        """Return a human-readable summary of the customer.
+    def display_info(self, customer: Customer) -> str:
+        """Return a human-readable summary.
+
+        Parameters
+        ----------
+        customer : Customer
+            Customer instance to display.
 
         Returns
         -------
@@ -70,13 +73,14 @@ class Customer(PersistentEntity):
             Formatted customer information string.
         """
         return (
-            f"Customer {self.name}"
-            f" (ID: {self.customer_id})\n"
-            f"  Email: {self.email}"
+            f"Customer {customer.name}"
+            f" (ID: {customer.customer_id})\n"
+            f"  Email: {customer.email}"
         )
 
     def modify_info(
         self,
+        customer: Customer,
         name: Optional[str] = None,
         email: Optional[str] = None,
     ) -> bool:
@@ -84,6 +88,8 @@ class Customer(PersistentEntity):
 
         Parameters
         ----------
+        customer : Customer
+            Customer instance to modify.
         name : str, optional
             New name for the customer.
         email : str, optional
@@ -95,7 +101,7 @@ class Customer(PersistentEntity):
             True if modifications were saved.
         """
         if name is not None:
-            self.name = name
+            customer.name = name
         if email is not None:
-            self.email = email
-        return self.save()
+            customer.email = email
+        return self.save(customer)

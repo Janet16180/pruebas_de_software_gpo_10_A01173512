@@ -1,18 +1,17 @@
-"""Hotel entity with JSON file persistence."""
+"""Hotel entity and manager."""
 
 import logging
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import ClassVar, Optional
 
-from persistence import PersistentEntity
+from persistence import EntityManager
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class Hotel(PersistentEntity):
-    """Represent a hotel with rooms that can be reserved.
+class Hotel:
+    """Hotel data.
 
     Parameters
     ----------
@@ -26,9 +25,6 @@ class Hotel(PersistentEntity):
         Total number of rooms available.
     """
 
-    _prefix: ClassVar[str] = "hotel"
-    _id_attr: ClassVar[str] = "hotel_id"
-
     hotel_id: int
     name: str
     location: str
@@ -38,16 +34,21 @@ class Hotel(PersistentEntity):
         init=False,
     )
 
-    @classmethod
-    def create(  # pylint: disable=too-many-arguments
-        cls,
+
+class HotelManager(EntityManager):
+    """Manager for Hotel persistence and operations."""
+
+    _prefix: ClassVar[str] = "hotel"
+    _id_attr: ClassVar[str] = "hotel_id"
+    _entity_cls: ClassVar[type] = Hotel
+
+    def create(
+        self,
         hotel_id: int,
         name: str,
         location: str,
         total_rooms: int,
-        *,
-        storage_dir: Optional[Path] = None,
-    ) -> Optional["Hotel"]:
+    ) -> Optional[Hotel]:
         """Create a new hotel and persist it to disk.
 
         Parameters
@@ -60,38 +61,41 @@ class Hotel(PersistentEntity):
             Location of the hotel.
         total_rooms : int
             Total number of rooms available.
-        storage_dir : Path, optional
-            Directory for JSON file persistence.
 
         Returns
         -------
         Hotel or None
-            The created hotel, or None if creation failed.
+            The created hotel, or None if failed.
         """
-        hotel = cls(hotel_id, name, location, total_rooms)
-        hotel._storage_dir = storage_dir or Path(".")
-        if hotel.save():
+        hotel = Hotel(hotel_id, name, location, total_rooms)
+        if self.save(hotel):
             return hotel
         return None
 
-    def display_info(self) -> str:
+    def display_info(self, hotel: Hotel) -> str:
         """Return a human-readable summary of the hotel.
+
+        Parameters
+        ----------
+        hotel : Hotel
+            Hotel instance to display.
 
         Returns
         -------
         str
             Formatted hotel information string.
         """
-        available = self.total_rooms - len(self.reserved_rooms)
+        available = hotel.total_rooms - len(hotel.reserved_rooms)
         return (
-            f"Hotel {self.name} (ID: {self.hotel_id})\n"
-            f"  Location: {self.location}\n"
-            f"  Rooms: {available}/{self.total_rooms}"
+            f"Hotel {hotel.name} (ID: {hotel.hotel_id})\n"
+            f"  Location: {hotel.location}\n"
+            f"  Rooms: {available}/{hotel.total_rooms}"
             " available"
         )
 
     def modify_info(
         self,
+        hotel: Hotel,
         name: Optional[str] = None,
         location: Optional[str] = None,
         total_rooms: Optional[int] = None,
@@ -100,6 +104,8 @@ class Hotel(PersistentEntity):
 
         Parameters
         ----------
+        hotel : Hotel
+            Hotel instance to modify.
         name : str, optional
             New name for the hotel.
         location : str, optional
@@ -113,18 +119,24 @@ class Hotel(PersistentEntity):
             True if modifications were saved.
         """
         if name is not None:
-            self.name = name
+            hotel.name = name
         if location is not None:
-            self.location = location
+            hotel.location = location
         if total_rooms is not None:
-            self.total_rooms = total_rooms
-        return self.save()
+            hotel.total_rooms = total_rooms
+        return self.save(hotel)
 
-    def reserve_room(self, reservation_id: int) -> bool:
+    def reserve_room(
+        self,
+        hotel: Hotel,
+        reservation_id: int,
+    ) -> bool:
         """Reserve a room for the given reservation.
 
         Parameters
         ----------
+        hotel : Hotel
+            Hotel to reserve a room in.
         reservation_id : int
             ID of the reservation claiming the room.
 
@@ -133,23 +145,26 @@ class Hotel(PersistentEntity):
         bool
             True if reserved, False if fully booked.
         """
-        if len(self.reserved_rooms) >= self.total_rooms:
+        if len(hotel.reserved_rooms) >= hotel.total_rooms:
             logger.error(
                 "Hotel %d is fully booked.",
-                self.hotel_id,
+                hotel.hotel_id,
             )
             return False
-        self.reserved_rooms.append(reservation_id)
-        return self.save()
+        hotel.reserved_rooms.append(reservation_id)
+        return self.save(hotel)
 
     def cancel_reservation(
         self,
+        hotel: Hotel,
         reservation_id: int,
     ) -> bool:
         """Cancel a room reservation.
 
         Parameters
         ----------
+        hotel : Hotel
+            Hotel to cancel the reservation in.
         reservation_id : int
             ID of the reservation to cancel.
 
@@ -158,12 +173,12 @@ class Hotel(PersistentEntity):
         bool
             True if cancelled, False if not found.
         """
-        if reservation_id not in self.reserved_rooms:
+        if reservation_id not in hotel.reserved_rooms:
             logger.error(
                 "Reservation %d not found in hotel %d.",
                 reservation_id,
-                self.hotel_id,
+                hotel.hotel_id,
             )
             return False
-        self.reserved_rooms.remove(reservation_id)
-        return self.save()
+        hotel.reserved_rooms.remove(reservation_id)
+        return self.save(hotel)

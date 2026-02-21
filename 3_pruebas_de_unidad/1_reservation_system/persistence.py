@@ -1,4 +1,4 @@
-"""Base class for JSON-persisted entities."""
+"""Base manager for JSON-persisted dataclass entities."""
 
 import dataclasses
 import json
@@ -9,128 +9,141 @@ from typing import Any, ClassVar, Optional
 logger = logging.getLogger(__name__)
 
 
-class PersistentEntity:
-    """Base for entities persisted as JSON files.
+class EntityManager:
+    """Base manager for dataclass entity persistence.
 
-    Subclasses must be decorated with ``@dataclass`` and
-    define ``_prefix`` and ``_id_attr`` class variables.
+    Subclasses must define ``_prefix``, ``_id_attr``,
+    and ``_entity_cls`` class variables.
     """
 
     _prefix: ClassVar[str]
     _id_attr: ClassVar[str]
-    _storage_dir: Path = Path(".")
+    _entity_cls: ClassVar[type]
 
-    def _filepath(self) -> Path:
-        """Return the JSON file path for this entity.
+    def __init__(
+        self,
+        storage_dir: Optional[Path] = None,
+    ) -> None:
+        self._storage_dir = storage_dir or Path(".")
+
+    def _filepath(self, entity_id: int) -> Path:
+        """Return the JSON file path for an entity.
+
+        Parameters
+        ----------
+        entity_id : int
+            The entity's unique identifier.
 
         Returns
         -------
         Path
             Path to the entity's JSON file.
         """
-        entity_id = getattr(self, self._id_attr)
         return self._storage_dir / f"{self._prefix}_{entity_id}.json"
 
-    def to_dict(self) -> dict[str, Any]:
-        """Serialize entity to a dictionary.
+    def to_dict(self, entity: Any) -> dict[str, Any]:  # noqa: ANN401
+        """Serialize an entity to a dictionary.
+
+        Parameters
+        ----------
+        entity : Any
+            Dataclass instance to serialize.
 
         Returns
         -------
         dict[str, Any]
             Dictionary representation of the entity.
         """
-        return dataclasses.asdict(self)
+        return dataclasses.asdict(entity)
 
-    @classmethod
     def from_dict(
-        cls,
+        self,
         data: dict[str, Any],
-        *,
-        storage_dir: Optional[Path] = None,
-    ) -> "PersistentEntity":
+    ) -> Any:  # noqa: ANN401
         """Deserialize an entity from a dictionary.
 
         Parameters
         ----------
         data : dict[str, Any]
             Dictionary with entity attributes.
-        storage_dir : Path, optional
-            Directory for JSON file persistence.
 
         Returns
         -------
-        PersistentEntity
-            Reconstructed entity instance.
+        Any
+            Reconstructed dataclass instance.
         """
-        init_fields = {f.name for f in dataclasses.fields(cls) if f.init}
+        init_fields = {
+            f.name for f in dataclasses.fields(self._entity_cls) if f.init
+        }
         init_data = {k: v for k, v in data.items() if k in init_fields}
-        instance = cls(**init_data)
-        for dc_field in dataclasses.fields(cls):
+        instance = self._entity_cls(**init_data)
+        for dc_field in dataclasses.fields(
+            self._entity_cls,
+        ):
             if not dc_field.init and dc_field.name in data:
                 setattr(
                     instance,
                     dc_field.name,
                     data[dc_field.name],
                 )
-        instance._storage_dir = storage_dir or Path(".")
         return instance
 
-    def save(self) -> bool:
-        """Persist entity data to a JSON file.
+    def save(self, entity: Any) -> bool:  # noqa: ANN401
+        """Persist an entity to a JSON file.
+
+        Parameters
+        ----------
+        entity : Any
+            Dataclass instance to save.
 
         Returns
         -------
         bool
             True if saved successfully, False otherwise.
         """
+        entity_id = getattr(entity, self._id_attr)
         try:
             with open(
-                self._filepath(),
+                self._filepath(entity_id),
                 "w",
                 encoding="utf-8",
             ) as fh:
-                json.dump(self.to_dict(), fh, indent=2)
+                json.dump(
+                    self.to_dict(entity),
+                    fh,
+                    indent=2,
+                )
             return True
         except OSError as exc:
             logger.error(
                 "Failed to save %s %d: %s",
                 self._prefix,
-                getattr(self, self._id_attr),
+                entity_id,
                 exc,
             )
             return False
 
-    @classmethod
-    def load(
-        cls,
-        entity_id: int,
-        *,
-        storage_dir: Optional[Path] = None,
-    ) -> Optional["PersistentEntity"]:
+    def load(self, entity_id: int) -> Optional[Any]:  # noqa: ANN401
         """Load an entity from its JSON file.
 
         Parameters
         ----------
         entity_id : int
             The entity ID to load.
-        storage_dir : Path, optional
-            Directory where the JSON file is stored.
 
         Returns
         -------
-        PersistentEntity or None
-            The loaded entity, or None if loading failed.
+        Any or None
+            The loaded entity, or None if failed.
         """
-        sdir = storage_dir or Path(".")
-        filepath = sdir / f"{cls._prefix}_{entity_id}.json"
         try:
             with open(
-                filepath,
+                self._filepath(entity_id),
                 "r",
                 encoding="utf-8",
             ) as fh:
                 data = json.load(fh)
-            return cls.from_dict(data, storage_dir=sdir)
+            return self.from_dict(data)
         except (
             OSError,
             json.JSONDecodeError,
@@ -139,28 +152,34 @@ class PersistentEntity:
         ) as exc:
             logger.error(
                 "Failed to load %s %d: %s",
-                cls._prefix,
+                self._prefix,
                 entity_id,
                 exc,
             )
             return None
 
-    def delete(self) -> bool:
-        """Delete the entity's JSON file from disk.
+    def delete(self, entity: Any) -> bool:  # noqa: ANN401
+        """Delete an entity's JSON file from disk.
+
+        Parameters
+        ----------
+        entity : Any
+            Dataclass instance to delete.
 
         Returns
         -------
         bool
             True if deleted successfully, False otherwise.
         """
+        entity_id = getattr(entity, self._id_attr)
         try:
-            self._filepath().unlink()
+            self._filepath(entity_id).unlink()
             return True
         except OSError as exc:
             logger.error(
                 "Failed to delete %s %d: %s",
                 self._prefix,
-                getattr(self, self._id_attr),
+                entity_id,
                 exc,
             )
             return False
