@@ -1,0 +1,44 @@
+name: Test Reservation System
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "3_pruebas_de_unidad/1_reservation_system/**"
+  pull_request:
+    paths:
+      - "3_pruebas_de_unidad/1_reservation_system/**"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 3_pruebas_de_unidad/1_reservation_system
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync --dev
+        working-directory: .
+
+      - name: Run unit tests
+        run: uv run python -m unittest discover -s tests -v
+
+      - name: Run coverage
+        run: |
+          uv run python -m coverage run -m unittest discover -s tests
+          uv run python -m coverage report --fail-under=85
+
+      - name: Run pylint
+        run: uv run pylint persistence.py hotel.py customer.py reservation.py
