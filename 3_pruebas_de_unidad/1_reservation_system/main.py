@@ -11,22 +11,12 @@ from reservation import ReservationManager
 DEMO_DIR = Path("demo_data")
 
 
-def main() -> None:
-    """Run a demonstration of all system features."""
-    logging.disable(logging.CRITICAL)
-
-    if DEMO_DIR.exists():
-        shutil.rmtree(DEMO_DIR)
-    DEMO_DIR.mkdir()
-
-    hotel_mgr = HotelManager(DEMO_DIR)
-    customer_mgr = CustomerManager(DEMO_DIR)
-    reservation_mgr = ReservationManager(
-        DEMO_DIR,
-        hotel_mgr=hotel_mgr,
-        customer_mgr=customer_mgr,
-    )
-
+def demo_crud(
+    hotel_mgr: HotelManager,
+    customer_mgr: CustomerManager,
+    reservation_mgr: ReservationManager,
+) -> None:
+    """Demonstrate create, modify, and cancel operations."""
     print("Creating hotels...")
     h1 = hotel_mgr.create(1, "Grand Palace", "Downtown", 3)
     h2 = hotel_mgr.create(2, "Beach Resort", "Coastline", 2)
@@ -72,6 +62,13 @@ def main() -> None:
     print(hotel_mgr.display_info(h1))
     print()
 
+
+def demo_errors(
+    hotel_mgr: HotelManager,
+    customer_mgr: CustomerManager,
+    reservation_mgr: ReservationManager,
+) -> None:
+    """Demonstrate validation errors and edge cases."""
     print("Validation errors:")
     try:
         hotel_mgr.create(-1, "Bad Hotel", "Nowhere", 10)
@@ -96,6 +93,25 @@ def main() -> None:
     print(f"  Third reservation at Beach Resort: {result}")
     print()
 
+
+def main() -> None:
+    """Run a demonstration of all system features."""
+    logging.disable(logging.CRITICAL)
+
+    if DEMO_DIR.exists():
+        shutil.rmtree(DEMO_DIR)
+    DEMO_DIR.mkdir()
+
+    hotel_mgr = HotelManager(DEMO_DIR)
+    customer_mgr = CustomerManager(DEMO_DIR)
+    reservation_mgr = ReservationManager(
+        DEMO_DIR,
+        hotel_mgr=hotel_mgr,
+        customer_mgr=customer_mgr,
+    )
+
+    demo_crud(hotel_mgr, customer_mgr, reservation_mgr)
+    demo_errors(hotel_mgr, customer_mgr, reservation_mgr)
     print(f"JSON files saved in: {DEMO_DIR.resolve()}")
 
 
