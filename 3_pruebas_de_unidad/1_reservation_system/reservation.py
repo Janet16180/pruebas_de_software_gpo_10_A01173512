@@ -1,6 +1,5 @@
 """Reservation entity and manager."""
 
-import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import ClassVar, Optional
@@ -8,8 +7,6 @@ from typing import ClassVar, Optional
 from customer import CustomerManager
 from hotel import HotelManager
 from persistence import EntityManager
-
-logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -73,22 +70,23 @@ class ReservationManager(EntityManager):
         -------
         Reservation or None
             The created reservation, or None if failed.
+
+        Raises
+        ------
+        ValueError
+            If hotel or customer does not exist.
         """
         hotel = self._hotel_mgr.load(hotel_id)
         if hotel is None:
-            logger.error(
-                "Hotel %d not found.",
-                hotel_id,
+            raise ValueError(
+                f"Hotel {hotel_id} not found",
             )
-            return None
 
         customer = self._customer_mgr.load(customer_id)
         if customer is None:
-            logger.error(
-                "Customer %d not found.",
-                customer_id,
+            raise ValueError(
+                f"Customer {customer_id} not found",
             )
-            return None
 
         if not self._hotel_mgr.reserve_room(
             hotel,

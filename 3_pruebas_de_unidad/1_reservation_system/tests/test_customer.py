@@ -49,6 +49,22 @@ class TestCustomerCreate(unittest.TestCase):
         )
         self.assertIsNone(customer)
 
+    def test_create_negative_id_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(-1, "Alice", "alice@test.com")
+
+    def test_create_zero_id_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(0, "Alice", "alice@test.com")
+
+    def test_create_empty_name_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(1, "", "alice@test.com")
+
+    def test_create_empty_email_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(1, "Alice", "")
+
 
 class TestCustomerDelete(unittest.TestCase):
     """Tests for CustomerManager.delete."""

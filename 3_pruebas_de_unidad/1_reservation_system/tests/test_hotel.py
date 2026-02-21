@@ -46,6 +46,30 @@ class TestHotelCreate(unittest.TestCase):
         hotel = mgr.create(1, "Grand", "Downtown", 10)
         self.assertIsNone(hotel)
 
+    def test_create_negative_id_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(-1, "Grand", "Downtown", 10)
+
+    def test_create_zero_id_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(0, "Grand", "Downtown", 10)
+
+    def test_create_empty_name_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(1, "", "Downtown", 10)
+
+    def test_create_empty_location_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(1, "Grand", "", 10)
+
+    def test_create_zero_rooms_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(1, "Grand", "Downtown", 0)
+
+    def test_create_negative_rooms_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(1, "Grand", "Downtown", -5)
+
 
 class TestHotelDelete(unittest.TestCase):
     """Tests for HotelManager.delete."""
@@ -149,6 +173,26 @@ class TestHotelModifyInfo(unittest.TestCase):
         self.mgr.modify_info(hotel, name="New Name")
         loaded = self.mgr.load(1)
         self.assertEqual(loaded.name, "New Name")
+
+    def test_modify_negative_total_rooms_raises(self):
+        hotel = self.mgr.create(
+            1,
+            "Grand",
+            "Downtown",
+            10,
+        )
+        with self.assertRaises(ValueError):
+            self.mgr.modify_info(hotel, total_rooms=-1)
+
+    def test_modify_zero_total_rooms_raises(self):
+        hotel = self.mgr.create(
+            1,
+            "Grand",
+            "Downtown",
+            10,
+        )
+        with self.assertRaises(ValueError):
+            self.mgr.modify_info(hotel, total_rooms=0)
 
 
 class TestHotelReserveRoom(unittest.TestCase):

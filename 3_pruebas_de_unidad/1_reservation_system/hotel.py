@@ -66,7 +66,25 @@ class HotelManager(EntityManager):
         -------
         Hotel or None
             The created hotel, or None if failed.
+
+        Raises
+        ------
+        ValueError
+            If hotel_id/total_rooms are not positive
+            or name/location are empty.
         """
+        if hotel_id <= 0:
+            raise ValueError(
+                f"hotel_id must be positive, got {hotel_id}",
+            )
+        if not name:
+            raise ValueError("name must not be empty")
+        if not location:
+            raise ValueError("location must not be empty")
+        if total_rooms <= 0:
+            raise ValueError(
+                f"total_rooms must be positive, got {total_rooms}",
+            )
         hotel = Hotel(hotel_id, name, location, total_rooms)
         if self.save(hotel):
             return hotel
@@ -117,7 +135,16 @@ class HotelManager(EntityManager):
         -------
         bool
             True if modifications were saved.
+
+        Raises
+        ------
+        ValueError
+            If total_rooms is not positive.
         """
+        if total_rooms is not None and total_rooms <= 0:
+            raise ValueError(
+                f"total_rooms must be positive, got {total_rooms}",
+            )
         if name is not None:
             hotel.name = name
         if location is not None:

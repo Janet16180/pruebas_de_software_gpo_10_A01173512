@@ -63,13 +63,13 @@ class TestReservationCreate(unittest.TestCase):
         hotel = self.hotel_mgr.load(1)
         self.assertIn(100, hotel.reserved_rooms)
 
-    def test_create_hotel_not_found_returns_none(self):
-        res = self.mgr.create(100, 1, 999)
-        self.assertIsNone(res)
+    def test_create_hotel_not_found_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(100, 1, 999)
 
-    def test_create_customer_not_found_returns_none(self):
-        res = self.mgr.create(100, 999, 1)
-        self.assertIsNone(res)
+    def test_create_customer_not_found_raises(self):
+        with self.assertRaises(ValueError):
+            self.mgr.create(100, 999, 1)
 
     def test_create_hotel_fully_booked_returns_none(self):
         self.hotel_mgr.create(2, "Tiny", "Suburbs", 1)

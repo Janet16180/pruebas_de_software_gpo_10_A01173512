@@ -53,7 +53,21 @@ class CustomerManager(EntityManager):
         -------
         Customer or None
             The created customer, or None if failed.
+
+        Raises
+        ------
+        ValueError
+            If customer_id is not positive or
+            name/email are empty.
         """
+        if customer_id <= 0:
+            raise ValueError(
+                f"customer_id must be positive, got {customer_id}",
+            )
+        if not name:
+            raise ValueError("name must not be empty")
+        if not email:
+            raise ValueError("email must not be empty")
         customer = Customer(customer_id, name, email)
         if self.save(customer):
             return customer
