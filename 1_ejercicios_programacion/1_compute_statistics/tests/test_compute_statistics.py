@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
 import pytest  # noqa: E402
-from computeStatistics import (  # noqa: E402
+from compute_statistics import (  # noqa: E402
     StatisticsCalculator,
     process_file,
     format_results,

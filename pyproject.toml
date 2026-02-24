@@ -27,3 +27,10 @@ extend-select = [
 
 [tool.ruff.lint.per-file-ignores]
 "**/tests/**" = ["ANN"]
+
+[tool.pylint.MAIN]
+ignore-paths = [".*tests.*"]
+init-hook = "import sys; sys.path.insert(0, '3_pruebas_de_unidad/1_reservation_system')"
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = ["duplicate-code"]

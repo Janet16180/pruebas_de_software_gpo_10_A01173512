@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SCRIPT = BASE_DIR / "computeSales.py"
+SCRIPT = BASE_DIR / "compute_sales.py"
 RESOURCES = BASE_DIR / "resources"
 
 

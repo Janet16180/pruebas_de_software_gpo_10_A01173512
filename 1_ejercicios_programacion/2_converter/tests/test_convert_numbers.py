@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
 import pytest  # noqa: E402
-from convertNumbers import (  # noqa: E402
+from convert_numbers import (  # noqa: E402
     NumberConverter,
     process_file,
     format_results,
