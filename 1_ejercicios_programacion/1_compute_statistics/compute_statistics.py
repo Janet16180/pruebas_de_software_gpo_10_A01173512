@@ -30,15 +30,15 @@ class StatisticsCalculator:
         """
         if numbers == []:
             return []
-        else:
-            pivot = numbers[0]
-            lesser = StatisticsCalculator.sort_numbers(
-                [x for x in numbers[1:] if x < pivot]
-            )
-            greater = StatisticsCalculator.sort_numbers(
-                [x for x in numbers[1:] if x >= pivot]
-            )
-            return lesser + [pivot] + greater
+
+        pivot = numbers[0]
+        lesser = StatisticsCalculator.sort_numbers(
+            [x for x in numbers[1:] if x < pivot]
+        )
+        greater = StatisticsCalculator.sort_numbers(
+            [x for x in numbers[1:] if x >= pivot]
+        )
+        return lesser + [pivot] + greater
 
     @staticmethod
     def sqrt(number: float) -> float:
@@ -111,10 +111,10 @@ class StatisticsCalculator:
 
         if n % 2 == 1:
             return sorted_numbers[n // 2]
-        else:
-            mid1 = sorted_numbers[n // 2 - 1]
-            mid2 = sorted_numbers[n // 2]
-            return (mid1 + mid2) / 2
+
+        mid1 = sorted_numbers[n // 2 - 1]
+        mid2 = sorted_numbers[n // 2]
+        return (mid1 + mid2) / 2
 
     @staticmethod
     def mode(numbers: list[float]) -> list[float]:
@@ -139,8 +139,7 @@ class StatisticsCalculator:
 
         max_count = 0
         for count in frequency.values():
-            if count > max_count:
-                max_count = count
+            max_count = max(max_count, count)
 
         modes = []
         for num, count in frequency.items():
@@ -259,7 +258,7 @@ def process_file(file_path: Path) -> list[float]:
     return numbers
 
 
-def format_results(
+def format_results(  # pylint: disable=too-many-arguments,too-many-positional-arguments
     count: int,
     mean: float,
     median: float,
