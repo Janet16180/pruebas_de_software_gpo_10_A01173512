@@ -4,6 +4,7 @@ import argparse
 import logging
 import re
 import time
+from dataclasses import dataclass
 from pathlib import Path
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -258,47 +259,46 @@ def process_file(file_path: Path) -> list[float]:
     return numbers
 
 
-def format_results(  # pylint: disable=too-many-arguments,too-many-positional-arguments
-    count: int,
-    mean: float,
-    median: float,
-    mode: list[float],
-    std_dev: float,
-    variance: float,
-    elapsed_time: float,
-) -> str:
+@dataclass
+class StatisticsResult:
+    """Container for computed descriptive statistics."""
+
+    count: int
+    mean: float
+    median: float
+    mode: list[float]
+    std_dev: float
+    variance: float
+    elapsed_time: float
+
+
+def format_results(result: StatisticsResult) -> str:
     """
     Format the statistics results as a string.
 
     Args:
-        count: Number of valid data points.
-        mean: Calculated mean.
-        median: Calculated median.
-        mode: Calculated mode(s).
-        std_dev: Calculated standard deviation.
-        variance: Calculated variance.
-        elapsed_time: Time taken for computation.
+        result: Computed statistics to format.
 
     Returns:
         str: Formatted results string.
     """
-    if not mode or len(mode) > 1:
+    if not result.mode or len(result.mode) > 1:
         mode_str = "N/A"
     else:
-        mode_str = f"{mode[0]:f}"
+        mode_str = f"{result.mode[0]:f}"
 
     results = [
         "=" * 50,
         "DESCRIPTIVE STATISTICS RESULTS",
         "=" * 50,
-        f"Count:              {count}",
-        f"Mean:               {mean:f}",
-        f"Median:             {median:f}",
+        f"Count:              {result.count}",
+        f"Mean:               {result.mean:f}",
+        f"Median:             {result.median:f}",
         f"Mode:               {mode_str}",
-        f"Standard Deviation: {std_dev:f}",
-        f"Variance:           {variance:f}",
+        f"Standard Deviation: {result.std_dev:f}",
+        f"Variance:           {result.variance:f}",
         "=" * 50,
-        f"Elapsed Time:       {elapsed_time:.6f} seconds",
+        f"Elapsed Time:       {result.elapsed_time:.6f} seconds",
         "=" * 50,
     ]
 
@@ -333,24 +333,17 @@ def main() -> None:
         logger.error("No valid numbers found in the file")
         return
 
-    mean = StatisticsCalculator.mean(numbers)
-    median = StatisticsCalculator.median(numbers)
-    mode = StatisticsCalculator.mode(numbers)
-    variance = StatisticsCalculator.variance(numbers)
-    std_dev = StatisticsCalculator.std_dev(numbers)
-
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-
-    results = format_results(
+    result = StatisticsResult(
         count=len(numbers),
-        mean=mean,
-        median=median,
-        mode=mode,
-        std_dev=std_dev,
-        variance=variance,
-        elapsed_time=elapsed_time,
+        mean=StatisticsCalculator.mean(numbers),
+        median=StatisticsCalculator.median(numbers),
+        mode=StatisticsCalculator.mode(numbers),
+        std_dev=StatisticsCalculator.std_dev(numbers),
+        variance=StatisticsCalculator.variance(numbers),
+        elapsed_time=time.time() - start_time,
     )
+
+    results = format_results(result)
 
     logger.info(results)
     write_results_to_file(results)

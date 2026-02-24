@@ -9,6 +9,7 @@ sys.path.insert(0, str(BASE_DIR))
 import pytest  # noqa: E402
 from compute_statistics import (  # noqa: E402
     StatisticsCalculator,
+    StatisticsResult,
     process_file,
     format_results,
 )
@@ -338,32 +339,38 @@ class TestFormatResults:
 
     def test_format_contains_header(self):
         """Output should contain the header."""
-        result = format_results(10, 5.0, 5.0, [5.0], 1.0, 1.0, 0.001)
+        stats = StatisticsResult(10, 5.0, 5.0, [5.0], 1.0, 1.0, 0.001)
+        result = format_results(stats)
         assert "DESCRIPTIVE STATISTICS RESULTS" in result
 
     def test_format_single_mode(self):
         """A single mode should be displayed as a number."""
-        result = format_results(10, 5.0, 5.0, [230.0], 1.0, 1.0, 0.001)
+        stats = StatisticsResult(10, 5.0, 5.0, [230.0], 1.0, 1.0, 0.001)
+        result = format_results(stats)
         assert "Mode:               230.000000" in result
 
     def test_format_multiple_modes_na(self):
         """Multiple modes should display as N/A."""
-        result = format_results(10, 5.0, 5.0, [1.0, 2.0], 1.0, 1.0, 0.001)
+        stats = StatisticsResult(10, 5.0, 5.0, [1.0, 2.0], 1.0, 1.0, 0.001)
+        result = format_results(stats)
         assert "Mode:               N/A" in result
 
     def test_format_empty_mode_na(self):
         """An empty mode list should display as N/A."""
-        result = format_results(10, 5.0, 5.0, [], 1.0, 1.0, 0.001)
+        stats = StatisticsResult(10, 5.0, 5.0, [], 1.0, 1.0, 0.001)
+        result = format_results(stats)
         assert "Mode:               N/A" in result
 
     def test_format_count(self):
         """Count should appear in the output."""
-        result = format_results(42, 0.0, 0.0, [], 0.0, 0.0, 0.0)
+        stats = StatisticsResult(42, 0.0, 0.0, [], 0.0, 0.0, 0.0)
+        result = format_results(stats)
         assert "Count:              42" in result
 
     def test_format_elapsed_time(self):
         """Elapsed time should appear formatted with 6 decimals."""
-        result = format_results(1, 0.0, 0.0, [], 0.0, 0.0, 1.234567)
+        stats = StatisticsResult(1, 0.0, 0.0, [], 0.0, 0.0, 1.234567)
+        result = format_results(stats)
         assert "Elapsed Time:       1.234567 seconds" in result
 
 
